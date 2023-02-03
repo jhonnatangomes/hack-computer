@@ -1,0 +1,33 @@
+name: build-and-publish
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Rust Tooolchain Installation
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Wasm-pack Installation
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Wasm-pack build
+        run: wasm-pack build --target web
+      - name: Create github pages artifacts
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./pkg
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Github Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
