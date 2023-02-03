@@ -21,10 +21,10 @@ jobs:
   deploy:
     needs: build
     permissions:
-      pages: write
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Github Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          folder: ./docs
+          personal_token: ${{ secrets.PERSONAL_TOKEN }}
